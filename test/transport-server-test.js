@@ -8,7 +8,6 @@
 const assert          = require('chai').assert;
 const request         = require('supertest');
 const MockClient      = require('./tools/mock-client');
-const promisify       = require('./tools/promisify');
 const TransportServer = require('../lib/transport-server');
 
 let nonceRE = /^[a-zA-Z0-9-_]+$/;
@@ -34,8 +33,8 @@ describe('transport-level server', function() {
       res.json(result);
     });
 
-    mockClient.makeJWS(nonce, 'http://0.0.0.0/foo', payload)
-      .then(jws => promisify(request(server.app).post('/foo').send(jws)))
+    mockClient.makeJWS(nonce, 'http://127.0.0.1/foo', payload)
+      .then(jws => request(server.app).post('/foo').send(jws))
       .then(res => {
         assert.equal(res.status, 200);
 

@@ -9,11 +9,10 @@ const assert     = require('chai').assert;
 const request    = require('supertest');
 const urlParse   = require('url');
 const MockClient = require('./tools/mock-client');
-const promisify  = require('./tools/promisify');
 const ACMEServer = require('../lib/acme-server');
 
 let serverConfig = {
-  host:               '0.0.0.0',
+  host:               '127.0.0.1',
   authzExpirySeconds: 30 * 24 * 3600,
   // TODO: Change to pass in validation objects
   autoChallenge:      true
@@ -39,7 +38,7 @@ describe('ACME server', function() {
 
     server.terms = termsURL;
 
-    promisify(request(server.app).get('/directory'))
+    request(server.app).get('/directory')
       .then(res => {
         assert.equal(res.status, 200);
 
@@ -65,7 +64,7 @@ describe('ACME server', function() {
     };
 
     server.db.put(reg);
-    promisify(request(server.app).get('/foo/bar'))
+    request(server.app).get('/foo/bar')
       .then(res => {
         assert.equal(res.status, 200);
         assert.deepEqual(res.body, reg.marshal());
@@ -101,7 +100,7 @@ describe('ACME server', function() {
 
     let testServer = request(server.app);
     mockClient.makeJWS(nonce, url, reg)
-      .then(jws => promisify(testServer.post('/new-reg').send(jws)))
+      .then(jws => testServer.post('/new-reg').send(jws))
       .then(res => {
         assert.equal(res.status, 201);
 
@@ -119,7 +118,7 @@ describe('ACME server', function() {
         let newNonce = res.headers['replay-nonce'];
         return mockClient.makeJWS(newNonce, res.headers.location, {});
       })
-      .then(jws => promisify(testServer.post(regPath).send(jws)))
+      .then(jws => testServer.post(regPath).send(jws))
       .then(res => {
         assert.equal(res.status, 200);
         assert.deepEqual(res.body, created);
@@ -195,7 +194,7 @@ describe('ACME server', function() {
         };
         server.db.put(existing);
 
-        return promisify(request(server.app).post(`/reg/${existing.id}`).send(jws));
+        return request(server.app).post(`/reg/${existing.id}`).send(jws);
       })
       .then(res => {
         assert.equal(res.status, 200);
@@ -208,7 +207,8 @@ describe('ACME server', function() {
         assert.deepEqual(res.body.contact, reg2.contact);
         assert.deepEqual(res.body.agreement, reg2.agreement);
         done();
-      });
+      })
+      .catch(done);
   });
 
   it('creates a new application', function(done) {
@@ -247,7 +247,7 @@ describe('ACME server', function() {
         };
         server.db.put(existing);
 
-        return promisify(testServer.post('/new-app').send(jws));
+        return testServer.post('/new-app').send(jws);
       })
       .then(res => {
         assert.equal(res.status, 201);
@@ -271,7 +271,7 @@ describe('ACME server', function() {
             return Promise.resolve(false);
           }
           let authzPath = path(req.url);
-          return promisify(testServer.get(authzPath));
+          return testServer.get(authzPath);
         });
         return Promise.all(authz);
       })
@@ -307,7 +307,7 @@ describe('ACME server', function() {
             assert.isString(chall.url);
 
             let challPath = path(chall.url);
-            let test = promisify(testServer.get(challPath))
+            let test = testServer.get(challPath)
               .then(res2 => {
                 assert.equal(res2.status, 200);
                 assert.deepEqual(res2.body, chall);
@@ -365,7 +365,7 @@ describe('ACME server', function() {
         };
         server.db.put(existing);
 
-        return promisify(testServer.post('/new-app').send(jws));
+        return testServer.post('/new-app').send(jws);
       })
       .then(res => {
         assert.equal(res.status, 201);
@@ -379,7 +379,7 @@ describe('ACME server', function() {
             let challPath;
 
             return Promise.resolve()
-              .then(() => promisify(testServer.get(authzPath)))
+              .then(() => testServer.get(authzPath))
               .then(authzRes => {
                 assert.equal(authzRes.status, 200);
 
@@ -388,9 +388,9 @@ describe('ACME server', function() {
                 let challNonce = server.transport.nonces.get();
                 return mockClient.makeJWS(challNonce, challURL, {});
               })
-              .then(jws =>  promisify(testServer.post(challPath).send(jws)))
+              .then(jws => testServer.post(challPath).send(jws))
               .then(challRes => assert.equal(challRes.status, 200))
-              .then(() => promisify(testServer.get(authzPath)))
+              .then(() => testServer.get(authzPath))
               .then(authzRes => {
                 assert.equal(authzRes.status, 200);
                 assert.equal(authzRes.body.status, 'valid');
@@ -399,7 +399,7 @@ describe('ACME server', function() {
 
         return Promise.all(validations);
       })
-      .then(() => promisify(testServer.get(appPath)))
+      .then(() => testServer.get(appPath))
       .then(res => {
         assert.equal(res.status, 200);
         assert.equal(res.body.status, 'valid');
