@@ -93,7 +93,7 @@ describe('ACME server', function() {
     server.terms = termsURL;
 
     let nonce = server.transport.nonces.get();
-    let url = server.baseURL + 'new-reg';
+    let url = server.baseURL + '/new-reg';
     let reg = {contact: ['mailto:anonymous@example.com']};
     let regPath;
     let created;
@@ -133,7 +133,7 @@ describe('ACME server', function() {
     server.terms = termsURL;
 
     let nonce = server.transport.nonces.get();
-    let url = server.baseURL + 'new-reg';
+    let url = server.baseURL + '/new-reg';
     let reg = {contact: ['mailto:anonymous@example.com']};
     let jws;
 
@@ -174,7 +174,7 @@ describe('ACME server', function() {
       .then(k => k.thumbprint())
       .then(tpBuffer => {
         thumbprint = tpBuffer.toString('hex');
-        let url = `${server.baseURL}reg/${thumbprint}`;
+        let url = `${server.baseURL}/reg/${thumbprint}`;
         return mockClient.makeJWS(nonce, url, reg2);
       })
       .then(jws => {
@@ -216,7 +216,7 @@ describe('ACME server', function() {
 
     let thumbprint;
     let nonce = server.transport.nonces.get();
-    let url = server.baseURL + 'new-app';
+    let url = server.baseURL + '/new-app';
     let app = {
       'csr':       testCSR,
       'notBefore': '2016-07-14T23:19:36.197Z',
@@ -332,7 +332,7 @@ describe('ACME server', function() {
     let server = new ACMEServer(serverConfig);
 
     let nonce = server.transport.nonces.get();
-    let url = server.baseURL + 'new-app';
+    let url = server.baseURL + '/new-app';
     let app = {
       'csr':       testCSR,
       'notBefore': '2016-07-14T23:19:36.197Z',
