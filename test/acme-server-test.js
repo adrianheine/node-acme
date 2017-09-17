@@ -310,6 +310,7 @@ describe('ACME server', function() {
             let test = testServer.get(challPath)
               .then(res2 => {
                 assert.equal(res2.status, 200);
+                chall.status = 'valid'; // FIXME: Challenges auto-validate currently
                 assert.deepEqual(res2.body, chall);
               });
             challengeTests.push(test);
@@ -389,7 +390,7 @@ describe('ACME server', function() {
                 return mockClient.makeJWS(challNonce, challURL, {});
               })
               .then(jws => testServer.post(challPath).send(jws))
-              .then(challRes => assert.equal(challRes.status, 200))
+              .then(challRes => assert.equal(challRes.status, 202))
               .then(() => testServer.get(authzPath))
               .then(authzRes => {
                 assert.equal(authzRes.status, 200);
