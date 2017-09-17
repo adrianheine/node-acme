@@ -16,9 +16,10 @@ const caCert = fs.readFileSync('./ca.crt');
 
 let serverConfig = {
   basePath: '/acme',
-  host:            "acme-v01.api.letsencrypt.org",
-//  host: '127.0.0.1',
-  port: 443,
+  host: '127.0.0.1',
+  port: 80,
+//  host:            "acme-v01.api.letsencrypt.org",
+//  port: 443,
   authzExpirySeconds: 30 * 24 * 3600,
   // TODO: Change to pass in validation objects
   autoChallenge:      true,
@@ -26,7 +27,6 @@ let serverConfig = {
   caCert: caCert,
   acmeVersion: 'le'
 };
-
 
 let server = new ACMEServer(serverConfig);
 
