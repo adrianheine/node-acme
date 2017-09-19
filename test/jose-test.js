@@ -1,8 +1,10 @@
 'use strict';
 
 const assert   = require('chai').assert;
-const jose     = require('../lib/jose');
+const Jose     = require('../lib/jose');
 const nodeJose = require('node-jose');
+
+const jose = new Jose();
 
 describe('jose', function() {
   it('generate + sign + verify', function(done) {
@@ -25,9 +27,8 @@ describe('jose', function() {
       let payloadJSON = nodeJose.util.utf8.encode(payloadBytes);
       let payload = JSON.parse(payloadJSON);
       assert.deepEqual(content, payload);
-      return jws;
+      return jose.verify(jws);
     })
-    .then(jose.verify)
     .then(result => {
       assert.deepEqual(content, result.payload);
       done();

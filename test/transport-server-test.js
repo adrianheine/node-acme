@@ -73,6 +73,19 @@ describe('transport-level server', function() {
     });
   });
 
+  it('rejects a POST with no url', function(done) {
+    let server = new TransportServer();
+    let nonce = server.nonces.get();
+
+    mockClient.makeJWS(nonce, '', null, 'le') // 'ietf-draft' wouldn't allow an empty URL
+    .then(jws => {
+      request(server.app)
+        .post('/foo?bar=baz')
+        .send(jws)
+        .expect(400, done);
+    });
+  });
+
   it('provides a nonce for GET requests', function(done) {
     let server = new TransportServer();
     request(server.app)

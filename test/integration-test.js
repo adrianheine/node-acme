@@ -6,11 +6,12 @@
 'use strict';
 
 const assert          = require('chai').assert;
-const jose            = require('../lib/jose');
+const Jose            = require('../lib/jose');
 const TransportClient = require('../lib/transport-client');
 const TransportServer = require('../lib/transport-server');
 
 const PORT = 4430;
+const jose = new Jose();
 
 describe('transport-level client/server integration', function() {
   it('performs a POST request with preflight', function(done) {

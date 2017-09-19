@@ -1,9 +1,10 @@
 'use strict';
 
-const jose = require('../../lib/jose');
+const Jose = require('../../lib/jose');
 
 class MockClient {
   key() {
+    const jose = new Jose();
     if (this._key) {
       return Promise.resolve(this._key);
     }
@@ -14,7 +15,8 @@ class MockClient {
       });
   }
 
-  makeJWS(nonce, url, payload) {
+  makeJWS(nonce, url, payload, acmeVersion = 'ietf-draft') {
+    const jose = new Jose(acmeVersion);
     return this.key()
       .then(k => jose.sign(k, payload, {
         nonce: nonce,

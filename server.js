@@ -23,7 +23,8 @@ let serverConfig = {
   // TODO: Change to pass in validation objects
   autoChallenge:      true,
   caKey: caKey,
-  caCert: caCert
+  caCert: caCert,
+  acmeVersion: 'le'
 };
 
 

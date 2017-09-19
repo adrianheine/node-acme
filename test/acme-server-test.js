@@ -390,7 +390,7 @@ describe('ACME server', function() {
                 return mockClient.makeJWS(challNonce, challURL, {});
               })
               .then(jws => testServer.post(challPath).send(jws))
-              .then(challRes => assert.equal(challRes.status, 202))
+              .then(challRes => assert.equal(challRes.status, 200))
               .then(() => testServer.get(authzPath))
               .then(authzRes => {
                 assert.equal(authzRes.status, 200);
