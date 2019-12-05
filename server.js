@@ -16,9 +16,9 @@ const caCert = fs.readFileSync('./ca.crt');
 
 let serverConfig = {
   basePath: '/acme',
-  host: '127.0.0.1',
+//  host: '127.0.0.1',
   port: 80,
-//  host:            "acme-v01.api.letsencrypt.org",
+  host:            "acme-v02.api.letsencrypt.org",
   terms: 'terms',
 //  port: 443,
   authzExpirySeconds: 30 * 24 * 3600,
@@ -26,7 +26,7 @@ let serverConfig = {
   autoChallenge:      true,
   caKey: caKey,
   caCert: caCert,
-  acmeVersion: 'le'
+  acmeVersion: 'le',
 };
 
 let server = new ACMEServer(serverConfig);
