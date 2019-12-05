@@ -19,6 +19,7 @@ let serverConfig = {
   host: '127.0.0.1',
   port: 80,
 //  host:            "acme-v01.api.letsencrypt.org",
+  terms: 'terms',
 //  port: 443,
   authzExpirySeconds: 30 * 24 * 3600,
   // TODO: Change to pass in validation objects
